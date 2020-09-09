@@ -1,8 +1,8 @@
-# make-cancel-promise
+# make-cancel-promise ![tests](https://github.com/sw1tchdev/make-cancel-promise/workflows/Tests/badge.svg) [![codecov](https://codecov.io/gh/sw1tchdev/make-cancel-promise/branch/master/graph/badge.svg)](https://codecov.io/gh/sw1tchdev/make-cancel-promise)
 Make your promises cancelable
 
 ## Install
-npm
+NPM:
 ```
 npm install make-cancel-promise
 ```

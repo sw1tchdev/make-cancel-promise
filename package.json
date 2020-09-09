@@ -1,8 +1,11 @@
 {
   "name": "make-cancel-promise",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Make your promises cancelable",
   "repository": "https://github.com/sw1tchdev/make-cancel-promise.git",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "main": "build/makeCancelPromise.js",
   "types": "build/makeCancelPromise.d.ts",
   "files": [

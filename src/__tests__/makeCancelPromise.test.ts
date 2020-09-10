@@ -97,7 +97,7 @@ describe('makeCancelablePromise', () => {
         });
     });
 
-    test('Test Throw Without Catch', async() => {
+    test('Test Throw Without Catch', async () => {
         const cancelablePromise = makeCancelPromise((_, __) => {
             throw new Error('test');
         });
@@ -162,19 +162,26 @@ describe('clearSymbol', () => {
 
     test('Test clearSymbol with sync OnCancel', async () => {
         expect.assertions(3);
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(() => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
 
@@ -183,23 +190,33 @@ describe('clearSymbol', () => {
         });
 
         await cancelablePromise[clearSymbol]();
+        expect(timeoutResolve).toBeNull();
+        expect(timeoutReject).toBeNull();
     });
 
     test('Test clearSymbol without Reject with sync OnCancel', async () => {
         expect.assertions(2);
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(() => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
 
@@ -208,23 +225,34 @@ describe('clearSymbol', () => {
         });
 
         await cancelablePromise[clearSymbol](false);
+        expect(timeoutResolve).toBeNull();
+        expect(timeoutReject).toBeNull();
     });
 
     test('Test clearSymbol with sync OnCancel Try Catch', () => {
         expect.assertions(3);
+
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(() => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
 
@@ -236,24 +264,36 @@ describe('clearSymbol', () => {
             }
         })();
 
-        return cancelablePromise[clearSymbol]().then();
+        return cancelablePromise[clearSymbol]().then(() => {
+            expect(timeoutResolve).toBeNull();
+            expect(timeoutReject).toBeNull();
+        });
     });
 
     test('Test clearSymbol with async OnCancel', async () => {
         expect.assertions(3);
+
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(async () => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
 
@@ -262,23 +302,34 @@ describe('clearSymbol', () => {
         });
 
         await cancelablePromise[clearSymbol]();
+        expect(timeoutResolve).toBeNull();
+        expect(timeoutReject).toBeNull();
     });
 
     test('Test clearSymbol with async OnCancel Try Catch', () => {
         expect.assertions(3);
+
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(async () => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
 
@@ -290,7 +341,10 @@ describe('clearSymbol', () => {
             }
         })();
 
-        return cancelablePromise[clearSymbol]().then();
+        return cancelablePromise[clearSymbol]().then(() => {
+            expect(timeoutResolve).toBeNull();
+            expect(timeoutReject).toBeNull();
+        });
     });
 
     test('Test clearSymbol when OnCancel callback throw error', () => {
@@ -325,6 +379,10 @@ describe('clearSymbol', () => {
 
     test('Test clearSymbol Promise race', async () => {
         expect.assertions(2);
+
+        let timeoutResolveSecond: NodeJS.Timeout | null = null;
+        let timeoutRejectSecond: NodeJS.Timeout | null = null;
+
         const promise1 = makeCancelPromise((resolve, reject, onCancel) => {
             const timeoutResolve = setTimeout(() => {
                 resolve('its working');
@@ -336,45 +394,59 @@ describe('clearSymbol', () => {
             onCancel(async () => {
                 clearTimeout(timeoutResolve);
                 clearTimeout(timeoutReject);
-                expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                expect(timeoutReject).toHaveProperty('_destroyed', true);
             });
         });
         const promise2 = makeCancelPromise((resolve, reject, onCancel) => {
-            const timeoutResolve = setTimeout(() => {
+            timeoutResolveSecond = setTimeout(() => {
                 resolve('its working');
             }, 10);
-            const timeoutReject = setTimeout(() => {
+            timeoutRejectSecond = setTimeout(() => {
                 reject('its working');
             }, 20);
             onCancel(async () => {
-                clearTimeout(timeoutResolve);
-                clearTimeout(timeoutReject);
-                expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                expect(timeoutReject).toHaveProperty('_destroyed', true);
+                if (timeoutResolveSecond) {
+                    clearTimeout(timeoutResolveSecond);
+                    timeoutResolveSecond = null;
+                }
+
+                if (timeoutRejectSecond) {
+                    clearTimeout(timeoutRejectSecond);
+                    timeoutRejectSecond = null;
+                }
             });
         });
         await Promise.race([promise1, promise2]);
         await cancelPromise(promise1, promise2);
+
+        expect(timeoutResolveSecond).toBeNull();
+        expect(timeoutRejectSecond).toBeNull();
     });
 });
 
 describe('cancelPromise', () => {
     test('Test cancelPromise', async () => {
         expect.assertions(3);
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(async () => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
 
@@ -383,23 +455,34 @@ describe('cancelPromise', () => {
         });
 
         await cancelPromise(cancelablePromise);
+
+        expect(timeoutResolve).toBeNull();
+        expect(timeoutReject).toBeNull();
     });
 
     test('Test cancelPromise when cancelPromise throw error', async () => {
         expect.assertions(4);
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(async () => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                     throw new Error('test');
                 });
             });
@@ -412,39 +495,57 @@ describe('cancelPromise', () => {
             await cancelPromise(cancelablePromise);
         } catch (e) {
             expect(e).toBeInstanceOf(Error);
+            expect(timeoutResolve).toBeNull();
+            expect(timeoutReject).toBeNull();
         }
     });
 
     test('Test cancelPromise with multiple Promises', async () => {
         expect.assertions(6);
+        let timeoutResolve: NodeJS.Timeout | null = null;
+        let timeoutReject: NodeJS.Timeout | null = null;
+
+        let timeoutResolveSecond: NodeJS.Timeout | null = null;
+        let timeoutRejectSecond: NodeJS.Timeout | null = null;
+
         const cancelablePromise = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolve = setTimeout(() => {
                     resolve('its working');
                 }, 1);
-                const timeoutReject = setTimeout(() => {
+                timeoutReject = setTimeout(() => {
                     reject('its working');
                 }, 2);
                 onCancel(() => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolve) {
+                        clearTimeout(timeoutResolve);
+                        timeoutResolve = null;
+                    }
+
+                    if (timeoutReject) {
+                        clearTimeout(timeoutReject);
+                        timeoutReject = null;
+                    }
                 });
             });
         const cancelablePromiseSecond = makeCancelPromise(
             (resolve, reject, onCancel) => {
-                const timeoutResolve = setTimeout(() => {
+                timeoutResolveSecond = setTimeout(() => {
                     resolve('its working');
                 }, 10);
-                const timeoutReject = setTimeout(() => {
+                timeoutRejectSecond = setTimeout(() => {
                     reject('its working');
                 }, 20);
                 onCancel(() => {
-                    clearTimeout(timeoutResolve);
-                    clearTimeout(timeoutReject);
-                    expect(timeoutResolve).toHaveProperty('_destroyed', true);
-                    expect(timeoutReject).toHaveProperty('_destroyed', true);
+                    if (timeoutResolveSecond) {
+                        clearTimeout(timeoutResolveSecond);
+                        timeoutResolveSecond = null;
+                    }
+
+                    if (timeoutRejectSecond) {
+                        clearTimeout(timeoutRejectSecond);
+                        timeoutRejectSecond = null;
+                    }
                 });
             });
 
@@ -456,5 +557,10 @@ describe('cancelPromise', () => {
         });
 
         await cancelPromise(cancelablePromise, cancelablePromiseSecond);
+
+        expect(timeoutResolve).toBeNull();
+        expect(timeoutResolveSecond).toBeNull();
+        expect(timeoutReject).toBeNull();
+        expect(timeoutRejectSecond).toBeNull();
     });
 });

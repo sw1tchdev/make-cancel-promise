@@ -80,7 +80,8 @@ cancelablePromise[clearSymbol]().catch((e) => {
 });
 ```
 
-Cancel with ClearSymbol without rejecting
+Cancel with ClearSymbol without rejecting (using in some of cases)  
+**Warning: You must resolve or reject promise in onCancel callback manually to prevent a pending promises in memory**
 ```javascript
 import {
     makeCancelPromise, 

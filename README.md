@@ -100,6 +100,9 @@ const cancelablePromise = makeCancelPromise(
         onCancel(async () => {
             clearTimeout(timeoutResolve);
             clearTimeout(timeoutReject);
+            
+            // or resolve
+            reject(new CancelablePromiseError('Error'));
         });
 });
 
